@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fake News Detection App Using ML</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f2f4f8;
+            padding: 40px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        textarea, input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 15px;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .submit-btn {
+            background-color: #3498db;
+        }
+        .clear-btn {
+            background-color: #e74c3c;
+        }
+        .result {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Fake News Detection App Using ML</h1>
+        <form method="POST" enctype="multipart/form-data">
+            <label for="news_text"><strong>Enter News Text:</strong></label>
+            <textarea name="news_text" placeholder="Paste or write your news text here..."></textarea>
+            <div class="button-group">
+                <button type="submit" name="submit_text" class="submit-btn">Submit</button>
+                <button type="reset" class="clear-btn">Clear</button>
+            </div>
+
+            <hr>
+
+            <label for="news_file"><strong>Upload News File (.txt):</strong></label>
+            <input type="file" name="news_file" accept=".txt">
+            <div class="button-group">
+                <button type="submit" name="submit_file" class="submit-btn">Submit</button>
+                <button type="reset" class="clear-btn">Clear</button>
+            </div>
+        </form>
+
+        {% if result %}
+        <div class="result">
+            <strong>Result:</strong><br>
+            {{ result }}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
