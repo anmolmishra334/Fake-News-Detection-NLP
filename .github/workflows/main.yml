@@ -44,5 +44,5 @@ jobs:
 
     # Step 6: Dockerize the Application
     - name: Build Docker Image
-      run: docker build -t anmolmishra334/fake_news_detection:${{ github.run_number }} 
+      run: docker build -t anmolmishra334/fake_news_detection:${{ github.run_number }} .
    
