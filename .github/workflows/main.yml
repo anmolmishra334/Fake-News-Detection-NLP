@@ -45,4 +45,27 @@ jobs:
     # Step 6: Dockerize the Application
     - name: Build Docker Image
       run: docker build -t anmolmishra334/fake_news_detection:${{ github.run_number }} .
+      
+    # Step 7: Docker Image Push t DockerHub
+    - name: Push Docker Image to DockerHub
+      run: |
+        echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+        docker push username/fake-news-app:${{ github.run_number }}
+
+    # Step 7: Pull the Latest Docker Image and Run App
+    - name: Run Application
+      run: |
+        docker pull username/fake-news-app:${{ github.run_number }}
+        docker run -d -p 5000:5000 username/fake-news-app:${{ github.run_number }}
+
+    # Step 8: Run Security Analysis
+    - name: Run OWASP ZAP Scan
+      uses: zaproxy/action-full-scan@v0.6.0
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Run SonarQube Analysis
+      uses: SonarSource/sonarcloud-github-action@v2
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
    
