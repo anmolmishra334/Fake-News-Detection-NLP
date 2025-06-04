@@ -19,7 +19,7 @@ jobs:
     - name: Install Required Tools
       run: |
         sudo apt-get update
-        sudo apt-get install -y jq curl unzip
+        sudo apt-get install -y jq curl unzip wget
 
     # Step 3: Set up Python
     - name: Set up Python
@@ -75,16 +75,17 @@ jobs:
           sleep 5
         done
 
-    # Step 12: Generate SonarQube Token
-    - name: Generate SonarQube Token
+    # Step 12: Install Sonar Scanner CLI
+    - name: Install Sonar Scanner CLI
       run: |
-        curl -u admin:admin -X POST "http://localhost:9000/api/user_tokens/generate" \
-          -d "name=GitHubActionsToken" > sonar_token.json
-        jq -r '.token' sonar_token.json > sonar_token.txt
-        echo "SONAR_TOKEN=$(cat sonar_token.txt)" >> $GITHUB_ENV
+        wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.8.0.2856-linux.zip
+        unzip sonar-scanner-cli-4.8.0.2856-linux.zip
+        echo "$PWD/sonar-scanner-4.8.0.2856-linux/bin" >> $GITHUB_PATH
 
     # Step 13: Run SonarQube Scanner
     - name: Run SonarQube Scanner
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  # <- You should create this token manually in SonarQube UI and add as secret
       run: |
         sonar-scanner \
           -Dsonar.projectKey=my_project \
@@ -125,3 +126,4 @@ jobs:
         git push
       env:
         GITHUB_TOKEN: ${{ secrets.PUSH_TOKEN }}
+
