@@ -1,6 +1,7 @@
 from sklearn.model_selection import train_test_split
-x = df_final['Complete News']
-y = df_final['Fake News(Yes/No)']
+df=pd.read_csv('dataset/fake_news_final.csv')
+x = df['Complete News']
+y = df['Fake News(Yes/No)']
 x_train, x_test, y_train, y_test = train_test_split(x,y, test_size= 0.25)
 from sklearn.feature_extraction.text import TfidfVectorizer
 vectorization = TfidfVectorizer()
