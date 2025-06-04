@@ -36,3 +36,8 @@ jobs:
     # Step 4: Validate and Clean Dataset
     - name: Run Dataset Cleaning Script
       run: python scripts/clean_dataset.py
+
+     # Step 5: Train ML Model
+    - name: Train Model
+      run: |
+        python scripts/train_model.py
