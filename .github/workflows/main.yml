@@ -15,57 +15,58 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
 
-    # Step 2: Install Dependencies
+    # Step 2: Install Required Tools
+    - name: Install Required Tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y jq curl unzip
+
+    # Step 3: Set up Python
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: "3.9"
 
+    # Step 4: Install Python Dependencies
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r instructions.txt
 
-    # Step 3: Extract ZIP File
+    # Step 5: Extract Dataset ZIP
     - name: Extract Dataset ZIP
       run: |
-        mkdir dataset
+        mkdir -p dataset
         unzip fake_news_final.zip -d dataset/
         echo "Dataset extracted."
 
-    # Step 4: Validate and Clean Dataset
+    # Step 6: Run Dataset Cleaning Script
     - name: Run Dataset Cleaning Script
       run: python scripts/clean_dataset.py
 
-     # Step 5: Train ML Model
+    # Step 7: Train ML Model
     - name: Train Model
       run: |
         python scripts/train_model.py
+        echo "Model trained successfully."
 
-    # Step 6: Dockerize the Application
+    # Step 8: Build Docker Image
     - name: Build Docker Image
       run: docker build -t anmolmishra334/fake_news_detection:${{ github.run_number }} .
-      
-    # Step 7: Docker Image Push t DockerHub
+
+    # Step 9: Push Docker Image to DockerHub
     - name: Push Docker Image to DockerHub
       run: |
         echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-        docker push  anmolmishra334/fake_news_detection:${{ github.run_number }}
+        docker push anmolmishra334/fake_news_detection:${{ github.run_number }}
 
-    # Step 7: Pull the Latest Docker Image and Run App
-    - name: Run Application
-      run: |
-        sleep 30
-        docker pull anmolmishra334/fake_news_detection:${{ github.run_number }}
-        docker run -d -p 5000:5000  anmolmishra334/fake_news_detection:${{ github.run_number }}
-
-   # Step 8: Clear Contents of Scan Results Foder  
-    - name: Prepare Output Directory
+    # Step 10: Clear and Prepare Scan Results Folder
+    - name: Clear Scan Results Folder
       run: |
         mkdir -p scan_results
         rm -rf scan_results/*
-        
-   # Step 9: SonarQube Scanner Setup on VM
+
+    # Step 11: Start SonarQube
     - name: Start SonarQube
       run: |
         docker run -d --name sonarqube -p 9000:9000 sonarqube
@@ -73,49 +74,48 @@ jobs:
         until curl -s http://localhost:9000/api/system/status | grep -q '"status":"UP"'; do
           sleep 5
         done
-        
-   # Step 10: Generate SonarQube Token
-    - name: Generate SonarQube Token
-  run: |
-    curl -u admin:admin -X POST "http://localhost:9000/api/user_tokens/generate" \
-      -d "name=GitHubActionsToken" > sonar_token.json
-    jq -r '.token' sonar_token.json > sonar_token.txt
-    echo "SONAR_TOKEN=$(cat sonar_token.txt)" >> $GITHUB_ENV
-    
-   # Step 11: Run SonarQube Scanner
-    - name: Run SonarQube Scanner
-  run: |
-    sonar-scanner \
-      -Dsonar.projectKey=my_project \
-      -Dsonar.sources=. \
-      -Dsonar.host.url=http://localhost:9000 \
-      -Dsonar.login=$SONAR_TOKEN
 
-          
-   # Step 12: Save SonarQube Report
+    # Step 12: Generate SonarQube Token
+    - name: Generate SonarQube Token
+      run: |
+        curl -u admin:admin -X POST "http://localhost:9000/api/user_tokens/generate" \
+          -d "name=GitHubActionsToken" > sonar_token.json
+        jq -r '.token' sonar_token.json > sonar_token.txt
+        echo "SONAR_TOKEN=$(cat sonar_token.txt)" >> $GITHUB_ENV
+
+    # Step 13: Run SonarQube Scanner
+    - name: Run SonarQube Scanner
+      run: |
+        sonar-scanner \
+          -Dsonar.projectKey=my_project \
+          -Dsonar.sources=. \
+          -Dsonar.host.url=http://localhost:9000 \
+          -Dsonar.login=$SONAR_TOKEN
+
+    # Step 14: Save SonarQube Report
     - name: Save SonarQube Report
       run: |
         cp .scannerwork/report-task.txt scan_results/sonarqube_report.txt
-  
-  # Step 13: Start OWASP ZAP
+
+    # Step 15: Start OWASP ZAP
     - name: Start OWASP ZAP
       run: |
         docker run -u zap -p 8080:8080 --name owasp-zap -d owasp/zap2docker-stable
         echo "Waiting for OWASP ZAP to start..."
         sleep 30
-        
-   # Step 14: Run OWASP ZAP Scan
+
+    # Step 16: Run OWASP ZAP Scan
     - name: Run OWASP ZAP Scan
       run: |
         docker exec owasp-zap zap-baseline.py \
           -t http://localhost:5000 -r zap_report.html
-          
-  # Step 15: Save OWASP ZAP Report
+
+    # Step 17: Save OWASP ZAP Report
     - name: Save OWASP ZAP Report
       run: |
         mv zap_report.html scan_results/zap_report.html
-        
- # Step 16: Commit and Push Scan Results
+
+    # Step 18: Commit and Push Scan Results
     - name: Commit and Push Scan Results
       run: |
         git config user.name "GitHub Actions"
@@ -125,6 +125,3 @@ jobs:
         git push
       env:
         GITHUB_TOKEN: ${{ secrets.PUSH_TOKEN }}
-    
-    
-   
