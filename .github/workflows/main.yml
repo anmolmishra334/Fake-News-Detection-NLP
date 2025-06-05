@@ -65,58 +65,37 @@ jobs:
       run: |
         mkdir -p scan_results
         rm -rf scan_results/*
-
-    # Step 11: Start SonarQube
-    - name: Start SonarQube
-      run: |
-        docker run -d --name sonarqube -p 9000:9000 sonarqube
-        echo "Waiting for SonarQube to start..."
-        until curl -s http://localhost:9000/api/system/status | grep -q '"status":"UP"'; do
-          sleep 5
-        done
-
-    # Step 12: Install Sonar Scanner CLI
-    - name: Install Sonar Scanner CLI
-      run: |
-        wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.8.0.2856-linux.zip
-        unzip sonar-scanner-cli-4.8.0.2856-linux.zip
-        echo "$PWD/sonar-scanner-4.8.0.2856-linux/bin" >> $GITHUB_PATH
-
-    # Step 13: Run SonarQube Scanner
-    #- name: Run SonarQube Scanner
-     # env:
-      #  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  # <- You should create this token manually in SonarQube UI and add as secret
-      #run: |
-       # sonar-scanner \
-        #  -Dsonar.projectKey=my_project \
-        #  -Dsonar.sources=. \
-        #  -Dsonar.host.url=http://localhost:9000 \
-        #  -Dsonar.login=$SONAR_TOKEN
-
-    # Step 14: Save SonarQube Report
-    #- name: Save SonarQube Report
-     # run: |
-      #  cp .scannerwork/report-task.txt scan_results/sonarqube_report.txt
-
-    # Step 15: Start OWASP ZAP
+        
+    # Step 11: Run SonarCloud analysis
+    - name: Run SonarCloud analysis
+      uses: SonarSource/sonarcloud-github-action@v2
+      with:
+        args: >
+          -Dsonar.projectKey=<${{secrets.Sonar_Project_Key}}>
+          -Dsonar.python.version=3.9
+          -Dsonar.host.url=https://sonarcloud.io
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+          -Dsonar.sources=.
+    
+    # Step 12: Start OWASP ZAP
     - name: Start OWASP ZAP
       run: |
         docker run -u zap -p 8080:8080 --name owasp-zap -d owasp/zap2docker-stable
         echo "Waiting for OWASP ZAP to start..."
         sleep 30
 
-    # Step 16: Run OWASP ZAP Scan
+    # Step 13: Run OWASP ZAP Scan
     - name: Run OWASP ZAP Scan
       run: |
         docker exec owasp-zap zap-baseline.py \
           -t http://localhost:5000 -r zap_report.html
 
-    # Step 17: Save OWASP ZAP Report
+    # Step 14: Save OWASP ZAP Report
     - name: Save OWASP ZAP Report
       run: |
         mv zap_report.html scan_results/zap_report.html
 
-    # Step 18: Commit and Push Scan Results
+    # Step 15: Commit and Push Scan Results
     - name: Commit and Push Scan Results
       run: |
         git config user.name "GitHub Actions"
