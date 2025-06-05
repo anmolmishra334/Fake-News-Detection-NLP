@@ -71,7 +71,7 @@ jobs:
       uses: SonarSource/sonarcloud-github-action@v2
       with:
         args: >
-          -Dsonar.projectKey=<${{secrets.Sonar_Project_Key}}>
+          -Dsonar.projectKey=<${{ secrets.Sonar_Project_Key }}>
           -Dsonar.python.version=3.9
           -Dsonar.host.url=https://sonarcloud.io
           -Dsonar.login=${{ secrets.SONAR_TOKEN }}
@@ -96,13 +96,13 @@ jobs:
         mv zap_report.html scan_results/zap_report.html
 
     # Step 15: Commit and Push Scan Results
-    - name: Commit and Push Scan Results
-      run: |
-        git config user.name "GitHub Actions"
-        git config user.email "actions@github.com"
-        git add scan_results
-        git commit -m "Update scan results"
-        git push
-      env:
-        GITHUB_TOKEN: ${{ secrets.PUSH_TOKEN }}
+    #- name: Commit and Push Scan Results
+     # run: |
+      #  git config user.name "GitHub Actions"
+       # git config user.email "actions@github.com"
+        #git add scan_results
+        #git commit -m "Update scan results"
+        #git push
+      #env:
+       # GITHUB_TOKEN: ${{ secrets.PUSH_TOKEN }}
 
