@@ -16,10 +16,10 @@ jobs:
       uses: actions/checkout@v3
 
     # Step 2: Install Required Tools
-    - name: Install Required Tools
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y jq curl unzip wget
+   # - name: Install Required Tools
+    #  run: |
+     #   sudo apt update
+      #  sudo apt install -y jq curl unzip wget
 
     # Step 3: Set up Python
     - name: Set up Python
