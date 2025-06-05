@@ -4,21 +4,13 @@ FROM python:3.9-slim
 # Set the working directory
 WORKDIR /app
 
-# Copy application code to the container
+# Copy app code to the containerAdd commentMore actions
 COPY . /app
 
-# Install required system dependencies
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    gcc \
-    g++ \
-    libffi-dev \
-    && rm -rf /var/lib/apt/lists/*
+# Install dependencies
+RUN pip install --no-cache-dir -r instructions.txt
 
-# Install Python dependencies
-RUN pip install --upgrade pip && pip install --no-cache-dir -r instructions.txt
-
-# Expose the application port
+# Expose port
 EXPOSE 5000
 
 # Command to run the application
