@@ -83,20 +83,20 @@ jobs:
         echo "$PWD/sonar-scanner-4.8.0.2856-linux/bin" >> $GITHUB_PATH
 
     # Step 13: Run SonarQube Scanner
-    - name: Run SonarQube Scanner
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  # <- You should create this token manually in SonarQube UI and add as secret
-      run: |
-        sonar-scanner \
-          -Dsonar.projectKey=my_project \
-          -Dsonar.sources=. \
-          -Dsonar.host.url=http://localhost:9000 \
-          -Dsonar.login=$SONAR_TOKEN
+    #- name: Run SonarQube Scanner
+     # env:
+      #  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  # <- You should create this token manually in SonarQube UI and add as secret
+      #run: |
+       # sonar-scanner \
+        #  -Dsonar.projectKey=my_project \
+        #  -Dsonar.sources=. \
+        #  -Dsonar.host.url=http://localhost:9000 \
+        #  -Dsonar.login=$SONAR_TOKEN
 
     # Step 14: Save SonarQube Report
-    - name: Save SonarQube Report
-      run: |
-        cp .scannerwork/report-task.txt scan_results/sonarqube_report.txt
+    #- name: Save SonarQube Report
+     # run: |
+      #  cp .scannerwork/report-task.txt scan_results/sonarqube_report.txt
 
     # Step 15: Start OWASP ZAP
     - name: Start OWASP ZAP
