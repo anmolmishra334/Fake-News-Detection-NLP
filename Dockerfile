@@ -2,7 +2,7 @@
 FROM python:3.9-slim
 
 # Set the working directory
-WORKDIR /appAdd commentMore actions
+WORKDIR /app
 
 # Copy application code to the container
 COPY . /app
