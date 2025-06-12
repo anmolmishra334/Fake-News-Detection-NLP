@@ -66,43 +66,15 @@ jobs:
         mkdir -p scan_results
         rm -rf scan_results/*
         
-    # Step 11: Run SonarCloud analysis
-    #- name: Run SonarCloud analysis
-     # uses: SonarSource/sonarcloud-github-action@v2
-      #with:
-       # args: >
-        #  -Dsonar.projectKey=<${{ secrets.Sonar_Project_Key }}>
-         # -Dsonar.python.version=3.9
-          #-Dsonar.host.url=https://sonarcloud.io
-          #-Dsonar.login=${{ secrets.SONAR_TOKEN }}
-          #-Dsonar.sources=.
+    # Step 11: Initialize CodeQL
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
+      with:
+        languages: python
+
+    # Step 12: Perform CodeQL Analysis
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v2
     
-    # Step 12: Start OWASP ZAP
-    - name: Start OWASP ZAP
-      run: |
-        docker run -u zap -p 8080:8080 --name owasp-zap -d owasp/zap2docker-stable
-        echo "Waiting for OWASP ZAP to start..."
-        sleep 30
-
-    # Step 13: Run OWASP ZAP Scan
-    - name: Run OWASP ZAP Scan
-      run: |
-        docker exec owasp-zap zap-baseline.py \
-          -t http://localhost:5000 -r zap_report.html
-
-    # Step 14: Save OWASP ZAP Report
-    - name: Save OWASP ZAP Report
-      run: |
-        mv zap_report.html scan_results/zap_report.html
-
-    # Step 15: Commit and Push Scan Results
-    #- name: Commit and Push Scan Results
-     # run: |
-      #  git config user.name "GitHub Actions"
-       # git config user.email "actions@github.com"
-        #git add scan_results
-        #git commit -m "Update scan results"
-        #git push
-      #env:
-       # GITHUB_TOKEN: ${{ secrets.PUSH_TOKEN }}
+   
 
