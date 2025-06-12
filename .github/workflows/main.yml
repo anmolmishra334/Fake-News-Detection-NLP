@@ -67,15 +67,15 @@ jobs:
         rm -rf scan_results/*
         
     # Step 11: Run SonarCloud analysis
-    - name: Run SonarCloud analysis
-      uses: SonarSource/sonarcloud-github-action@v2
-      with:
-        args: >
-          -Dsonar.projectKey=<${{ secrets.Sonar_Project_Key }}>
-          -Dsonar.python.version=3.9
-          -Dsonar.host.url=https://sonarcloud.io
-          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
-          -Dsonar.sources=.
+    #- name: Run SonarCloud analysis
+     # uses: SonarSource/sonarcloud-github-action@v2
+      #with:
+       # args: >
+        #  -Dsonar.projectKey=<${{ secrets.Sonar_Project_Key }}>
+         # -Dsonar.python.version=3.9
+          #-Dsonar.host.url=https://sonarcloud.io
+          #-Dsonar.login=${{ secrets.SONAR_TOKEN }}
+          #-Dsonar.sources=.
     
     # Step 12: Start OWASP ZAP
     - name: Start OWASP ZAP
