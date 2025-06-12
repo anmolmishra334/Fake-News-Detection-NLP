@@ -68,32 +68,26 @@ jobs:
         mkdir -p scan_results
         rm -rf scan_results/*
         
-    # Step 11: Initialize CodeQL
+    # Step 11: Initialize CodeQL (SonarQube)
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
         languages: python
 
-    # Step 12: Perform CodeQL Analysis
+    # Step 12: Perform CodeQL Analysis (SonarQube)
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
     
-   # Step 13: Start OWASP ZAP
-    - name: Start OWASP ZAP
+  # Step 13: Docker Image Vulnerability Scan
+    - name: Docker Image Vulnerability Scan
       run: |
-        docker run -u zap -p 8080:8080 --name owasp-zap -d owasp/zap
-        echo "Waiting for OWASP ZAP to start..."
-        sleep 30
+        docker pull aquasec/trivy:latest
+        docker run --rm \
+          -v /var/run/docker.sock:/var/run/docker.sock \
+          -v ${{ github.workspace }}:/root/.cache/ \
+          aquasec/trivy image anmolmishra334/fake_news_detection:${{ github.run_number }}
 
-    # Step 14: Run OWASP ZAP Scan
-    - name: Run OWASP ZAP Scan
-      run: |
-        docker exec owasp-zap zap-baseline.py \
-          -t http://localhost:5000 -r zap_report.html
 
-    # Step 15: Save OWASP ZAP Report
-    - name: Save OWASP ZAP Report
-      run: |
-        mv zap_report.html scan_results/zap_report.html
+
 
 
