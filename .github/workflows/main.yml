@@ -78,14 +78,26 @@ jobs:
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
     
-  # Step 13: Docker Image Vulnerability Scan
-    - name: Docker Image Vulnerability Scan
+  #   Step 13: Pull Trivy Docker Image
+    - name: Pull Trivy Docker Image
+      run: docker pull aquasec/trivy:latest
+
+#   Step 14: Scan Docker Image for Vulnerabilities
+    - name: Scan Docker Image
       run: |
-        docker pull aquasec/trivy:latest
+        mkdir -p scan_results
         docker run --rm \
           -v /var/run/docker.sock:/var/run/docker.sock \
           -v ${{ github.workspace }}:/root/.cache/ \
-          aquasec/trivy image anmolmishra334/fake_news_detection:${{ github.run_number }}
+          aquasec/trivy image anmolmishra334/fake_news_detection:${{ github.run_number }} \
+          > scan_results/trivy_scan_report_${{ github.run_number }}.txt
+
+#   Step 15: Upload Trivy Scan Report
+    - name: Upload Trivy Scan Report
+      uses: actions/upload-artifact@v3
+      with:
+        name: Trivy Scan Report
+        path: scan_results/trivy_scan_report_${{ github.run_number }}.txt
 
 
 
