@@ -70,13 +70,13 @@ jobs:
         
     # Step 11: Initialize CodeQL
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
+      uses: github/codeql-action/init@v3
       with:
         languages: python
 
     # Step 12: Perform CodeQL Analysis
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
+      uses: github/codeql-action/analyze@v3
     
    # Step 13: Start OWASP ZAP
     - name: Start OWASP ZAP
