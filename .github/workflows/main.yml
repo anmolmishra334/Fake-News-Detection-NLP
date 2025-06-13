@@ -102,7 +102,7 @@ jobs:
         WORKDIR=$(pwd)
         # Copy the report to the scan_results folder
         mkdir -p scan_results
-        mv "$WORKDIR/path/to/trivy_scan_report_${{ github.run_number }}.txt" scan_results/
+        mv "$WORKDIR/trivy_scan_report_${{ github.run_number }}.txt" scan_results/
         # Add, commit, and push changes
         git add scan_results/
         git commit -m "Add Trivy Scan Report for run ${{ github.run_number }}"
