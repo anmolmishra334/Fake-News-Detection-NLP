@@ -92,18 +92,10 @@ jobs:
           aquasec/trivy image anmolmishra334/fake_news_detection:${{ github.run_number }} \
           > scan_results/trivy_scan_report_${{ github.run_number }}.txt
 
-# Step 15:Saving Trivy Scan Report 
-    - name: Commit and Push Trivy Scan Report
-      run: |
-        # Configure Git
-        git config user.name "${{ github.actor }}"
-        git config user.email "${{ github.actor }}@users.noreply.github.com"
-    
-        # Navigate to the GitHub workspace (if not already there)
-        cd ${{ github.workspace }}
-    
-        # Add, commit, and push changes
-        git add scan_results/
-        git commit -m "Add Trivy Scan Report for run ${{ github.run_number }}"
-        git push
+# Step 15: Upload Trivy Scan Report as an Artifact
+    - name: Upload Trivy Scan Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: Trivy-Scan-Report
+        path: scan_results/trivy_scan_report_${{ github.run_number }}.txt
 
