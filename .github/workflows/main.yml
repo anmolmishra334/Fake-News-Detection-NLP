@@ -17,17 +17,11 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
 
-    # Step 2: Install Required Tools
-   # - name: Install Required Tools
-    #  run: |
-     #   sudo apt update
-      #  sudo apt install -y jq curl unzip wget
-
     # Step 3: Set up Python
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: "3.9"
+        python-version: latest
 
     # Step 4: Install Python Dependencies
     - name: Install Dependencies
