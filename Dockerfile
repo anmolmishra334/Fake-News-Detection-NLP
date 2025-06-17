@@ -15,4 +15,3 @@ EXPOSE 5000
 
 # Command to run the application
 CMD ["python", "fake_news_app/app.py"]
-
