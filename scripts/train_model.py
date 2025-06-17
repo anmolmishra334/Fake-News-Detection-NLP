@@ -8,7 +8,7 @@ import pickle
 import os
 
 # Load the dataset
-df = pd.read_csv('dataset\\fake_news.csv')
+df=pd.read_csv('dataset/fake_news_final.csv')
 x = df['Complete News']
 y = df['Fake News(Yes/No)']
 
@@ -21,7 +21,7 @@ x_train = vectorization.fit_transform(x_train)
 x_test = vectorization.transform(x_test)
 
 # Filepath for the saved model
-model_file = 'C:\\Users\\Abhishek\\Desktop\\fake news folder\\model.pkl'
+model_file = 'dataset/Git_Repo_FND/model.pkl'
 
 # Load the existing model if available, otherwise initialize a new Logistic Regression model
 if os.path.exists(model_file):
