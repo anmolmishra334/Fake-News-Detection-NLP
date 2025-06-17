@@ -40,6 +40,12 @@ jobs:
     - name: Run Dataset Cleaning Script
       run: python scripts/clean_dataset.py
 
+   # Step 6: Clone GitHub Repository
+    - name: Clone GitHub Repository
+      run: |
+        git clone https://github.com/anmolmishra334/Fake-News-Detection-NLP dataset/Git_Repo_FND
+        echo "Repository cloned successfully." 
+   
     # Step 7: Train ML Model
     - name: Train Model
       run: |
