@@ -8,7 +8,7 @@ import pickle
 import os
 
 # Load the dataset
-df = pd.read_csv('dataset/fake_news_part6.csv')
+df = pd.read_csv('dataset/fake_news_part7.csv')
 x = df['Complete News']
 y = df['Fake News(Yes/No)']
 
