@@ -5,7 +5,7 @@ set -e
 
 # Define variables
 GIT_USERNAME="anmolmishra334"
-GIT_PASSWORD="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" 
+GIT_PASSWORD="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" 
 REPO_NAME="anmolmishra334/Fake-News-Detection-NLP"
 NEW_BRANCH_NAME="feature/new_model_$GITHUB_RUN_NUMBER"
 
