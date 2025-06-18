@@ -76,7 +76,7 @@ jobs:
           NEW_BRANCH_NAME="feature/new_model_${GITHUB_RUN_NUMBER}"
           git checkout -b $NEW_BRANCH_NAME
 
-          git add dataset/git_repo_FND/model.pkl Fake_News_App/model.pkl
+          git add .
           git commit -m "Update model.pkl files for run #${GITHUB_RUN_NUMBER}"
 
           git push https://x-access-token:${GITHUB_TOKEN}@github.com/anmolmishra334/Fake-News-Detection-NLP.git $NEW_BRANCH_NAME
