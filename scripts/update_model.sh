@@ -6,7 +6,7 @@ set -e
 NEW_MODEL="dataset/new_model_folder/model.pkl"
 REPO_MODEL="dataset/git_repo_FND/model.pkl"
 APP_MODEL="Fake_News_App/model.pkl"
-GITHUB_RUN_NUMBER="${GITHUB_RUN_NUMBER:-local}"
+GITHUB_RUN_NUMBER="${GITHUB_RUN_NUMBER}"
 BRANCH_NAME="feature/new_model_${GITHUB_RUN_NUMBER}"
 
 # Ensure GitHub CLI is authenticated
