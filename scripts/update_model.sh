@@ -10,9 +10,9 @@ REPO_NAME="anmolmishra334/Fake-News-Detection-NLP"
 NEW_BRANCH_NAME="feature/new_model_$GITHUB_RUN_NUMBER"
 
 # Replace old model files with the new one
-rm -f dataset/Git_Repo_FND/model.pkl
+rm -f dataset/git_repo_FND/model.pkl
 rm -f Fake_News_App/model.pkl
-cp dataset/new_model_folder/model.pkl dataset/Git_Repo_FND/
+cp dataset/new_model_folder/model.pkl dataset/git_repo_FND/
 cp dataset/new_model_folder/model.pkl Fake_News_App/
 
 # Configure git
@@ -26,7 +26,7 @@ git remote set-url origin https://$GIT_USERNAME:$GIT_PASSWORD@github.com/$REPO_N
 git checkout -b $NEW_BRANCH_NAME
 
 # Stage the changes
-git add dataset/Git_Repo_FND/model.pkl Fake_News_App/model.pkl
+git add dataset/git_repo_FND/model.pkl Fake_News_App/model.pkl
 
 # Commit the changes
 git commit -m "Update model.pkl files for run #$RANDOM"
