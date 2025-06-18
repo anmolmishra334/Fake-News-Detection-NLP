@@ -14,13 +14,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Test GITHUB_TOKEN permissions
-        run: |
-          git ls-remote https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-
       # Step 1: Checkout Repository
       - name: Checkout Repository
         uses: actions/checkout@v3
+        
+      - name: Test GITHUB_TOKEN permissions
+        run: |
+              git ls-remote https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
 
       # Step 2: Set up Python
       - name: Set up Python
