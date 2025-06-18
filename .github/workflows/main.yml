@@ -55,13 +55,13 @@ jobs:
         
     # Step 8: Displace model.pkl and Commit Changes
     - name: Set execute permission for the script
-      run: chmod +x update_model.sh
+      run: chmod +x dataset/git_repo_FND/scripts/update_model.sh
 
     - name: Execute the script
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_RUN_NUMBER: ${{ github.run_number }}
-      run: ./update_model.sh
+      run: dataset/git_repo_FND/scripts/update_model.sh
        
     # Step 9: Build Docker Image
     - name: Build Docker Image
