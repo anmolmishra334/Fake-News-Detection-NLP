@@ -37,7 +37,7 @@ jobs:
           mkdir -p dataset
           unzip fake_news_final.zip -d dataset/
           echo "Dataset extracted."
-          echo pwd
+          pwd
 
       # Step 5: Run Dataset Cleaning Script
       - name: Run Dataset Cleaning Script
@@ -48,7 +48,7 @@ jobs:
         run: |
           git clone https://github.com/anmolmishra334/Fake-News-Detection-NLP dataset/git_repo_FND
           echo "Repository cloned successfully."
-          echo pwd
+          pwd
    
       # Step 7: Train ML Model
       - name: Train Model
@@ -61,8 +61,8 @@ jobs:
         run: |
           rm -f dataset/git_repo_FND/model.pkl
           rm -f dataset/git_repo_FND/Fake_News_App/model.pkl
-          cp dataset/new_model_folder/model.pkl git_repo_FND/
-          cp dataset/new_model_folder/model.pkl git_repo_FND/Fake_News_App/
+          cp dataset/new_model_folder/model.pkl dataset/git_repo_FND/
+          cp dataset/new_model_folder/model.pkl dataset/git_repo_FND/Fake_News_App/
 
       # Step 9: Configure Git and Push Changes
       - name: Configure Git and Push Changes
