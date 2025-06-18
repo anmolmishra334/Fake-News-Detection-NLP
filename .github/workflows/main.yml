@@ -2,6 +2,7 @@ name: MLOps Pipeline for Fake News Detection
 
 permissions:
   security-events: write
+  contents: write
 
 on:
   push:
