@@ -1,42 +1,38 @@
 #!/bin/bash
 
+# Ensure the script fails on error
 set -e
 
-# Variables
-NEW_MODEL="dataset/new_model_folder/model.pkl"
-REPO_MODEL="dataset/git_repo_FND/model.pkl"
-APP_MODEL="Fake_News_App/model.pkl"
-GITHUB_RUN_NUMBER="${GITHUB_RUN_NUMBER}"
-BRANCH_NAME="feature/new_model_${GITHUB_RUN_NUMBER}"
+# Define variables
+GIT_USERNAME="anmolmishra334"
+GIT_PASSWORD="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" 
+REPO_NAME="anmolmishra334/Fake-News-Detection-NLP"
+NEW_BRANCH_NAME="feature/new_model_$GITHUB_RUN_NUMBER"
 
-# Ensure GitHub CLI is authenticated
-echo "$GITHUB_TOKEN" | gh auth login --with-token
+# Replace old model files with the new one
+rm -f dataset/Git_Repo_FND/model.pkl
+rm -f Fake_News_App/model.pkl
+cp dataset/new_model_folder/model.pkl dataset/Git_Repo_FND/
+cp dataset/new_model_folder/model.pkl Fake_News_App/
 
-# Remove existing model files
-if [ -f "$REPO_MODEL" ]; then
-  rm -f "$REPO_MODEL"
-  echo "Removed $REPO_MODEL"
-fi
+# Configure git
+git config --global user.name "$GIT_USERNAME"
+git config --global user.email "$GIT_USERNAME@users.noreply.github.com"
 
-if [ -f "$APP_MODEL" ]; then
-  rm -f "$APP_MODEL"
-  echo "Removed $APP_MODEL"
-fi
+# Add the GitHub credentials to the remote URL
+git remote set-url origin https://$GIT_USERNAME:$GIT_PASSWORD@github.com/$REPO_NAME.git
 
-# Copy the new model to the required locations
-cp "$NEW_MODEL" "$REPO_MODEL"
-echo "Copied new model to $REPO_MODEL"
+# Create a new branch
+git checkout -b $NEW_BRANCH_NAME
 
-cp "$NEW_MODEL" "$APP_MODEL"
-echo "Copied new model to $APP_MODEL"
+# Stage the changes
+git add dataset/Git_Repo_FND/model.pkl Fake_News_App/model.pkl
 
-# Git operations
-git checkout -b "$BRANCH_NAME"
-git add "$REPO_MODEL" "$APP_MODEL"
-git commit -m "Update model.pkl in app and repo folders with new model"
-git push origin "$BRANCH_NAME"
+# Commit the changes
+git commit -m "Update model.pkl files for run #$RANDOM"
+
+# Push the changes to the new branch
+git push origin $NEW_BRANCH_NAME
 
 # Create a pull request
-gh pr create --base master --head "$BRANCH_NAME" --title "Update model.pkl with new model" --body "This PR updates the model.pkl file in the app and repo folders with the new trained model."
-
-echo "Script execution completed successfully."
+gh pr create --base master --head $NEW_BRANCH_NAME --title "Update model.pkl files" --body "Automated update for model.pkl files."
