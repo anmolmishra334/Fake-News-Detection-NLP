@@ -30,7 +30,7 @@ echo "5"
 git add dataset/git_repo_FND/model.pkl Fake_News_App/model.pkl
 echo "6"
 # Commit the changes
-git commit -m "Update model.pkl files for run #$RANDOM"
+git commit -m "Update model.pkl files for run #$GITHUB_RUN_NUMBER"
 echo "7"
 # Push the changes to the new branch
 git push origin $NEW_BRANCH_NAME
