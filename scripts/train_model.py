@@ -1,4 +1,4 @@
-import pandas as pd
+_import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
@@ -21,7 +21,7 @@ x_train = vectorization.fit_transform(x_train)
 x_test = vectorization.transform(x_test)
 
 # Filepath for the saved model in the cloned repository
-repo_model_file = 'dataset/git_repo_FND/model.pkl'
+repo_model_file = 'dataset/git_repo_FND/Fake_News_App/model.pkl'
 
 # Load the existing model if available, otherwise initialize a new Logistic Regression model
 if os.path.exists(repo_model_file):
