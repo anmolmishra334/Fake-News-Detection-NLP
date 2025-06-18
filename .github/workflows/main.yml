@@ -53,19 +53,45 @@ jobs:
           python scripts/train_model.py
           echo "Model trained successfully."
         
-      # Step 8: Displace model.pkl and Commit Changes
-      - name: Set execute permission for the script
-        run: chmod +x dataset/git_repo_FND/scripts/update_model.sh
+      # Step 4: Replace Old Model Files
+      - name: Replace Model Files
+        run: |
+          rm -f dataset/git_repo_FND/model.pkl
+          rm -f Fake_News_App/model.pkl
+          cp dataset/new_model_folder/model.pkl dataset/git_repo_FND/
+          cp dataset/new_model_folder/model.pkl Fake_News_App/
 
-      # Step 9: Execute the script
-      - name: Execute the script
+    # Step 5: Configure Git and Push Changes
+      - name: Configure Git and Push Changes
         env:
           GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
           GIT_PASSWORD: ${{ secrets.GIT_CRED }}
           GITHUB_RUN_NUMBER: ${{ github.run_number }}
-        run: dataset/git_repo_FND/scripts/update_model.sh
-        
-           echo "Changes made and pushed to repo successfully."
+        run: |
+          git config --global user.name "$GIT_USERNAME"
+          git config --global user.email "anmol.mishra334@gmail.com"
+
+          git remote set-url origin https://$GIT_USERNAME:$GIT_PASSWORD@github.com/anmolmishra334/Fake-News-Detection-NLP.git
+
+          NEW_BRANCH_NAME="feature/new_model_${GITHUB_RUN_NUMBER}"
+          git checkout -b $NEW_BRANCH_NAME
+
+          git add dataset/git_repo_FND/model.pkl Fake_News_App/model.pkl
+          git commit -m "Update model.pkl files for run #${GITHUB_RUN_NUMBER}"
+
+          git push origin $NEW_BRANCH_NAME
+
+      # Step 6: Create Pull Request
+      - name: Create Pull Request
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NEW_BRANCH_NAME: feature/new_model_${{ github.run_number }}
+        run: |
+          gh pr create \
+            --base master \
+            --head $NEW_BRANCH_NAME \
+            --title "Update model.pkl files" \
+            --body "Automated update for model.pkl files."
        
       # Step 10: Build Docker Image
       - name: Build Docker Image
