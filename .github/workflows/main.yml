@@ -28,7 +28,7 @@ jobs:
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r instructions.txt
+        pip install -r requirements.txt
 
     # Step 4: Extract Dataset ZIP
     - name: Extract Dataset ZIP
@@ -53,21 +53,26 @@ jobs:
         python scripts/train_model.py
         echo "Model trained successfully."
         
-    # Step 8: Displace model.pkl and Commit Changes
-    - name: Set execute permission for the script
+    # Step 8: Replace model.pkl and Commit Changes
+    - name: Set Execute Permission for the Script
       run: chmod +x dataset/git_repo_FND/scripts/update_model.sh
 
-    - name: Execute the script
-      run: dataset/git_repo_FND/scripts/update_model.sh
-       
+    - name: Execute Update Script
+      run: |
+        dataset/git_repo_FND/scripts/update_model.sh
+        echo "New branch created and changes pushed successfully."
+
     # Step 9: Build Docker Image
     - name: Build Docker Image
       run: docker build -t anmolmishra334/fake_news_detection:${{ github.run_number }} .
 
     # Step 10: Push Docker Image to DockerHub
     - name: Push Docker Image to DockerHub
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       run: |
-        echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+        echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
         docker push anmolmishra334/fake_news_detection:${{ github.run_number }}
 
     # Step 11: Clear and Prepare Scan Results Folder
@@ -97,7 +102,7 @@ jobs:
         docker run --rm \
           -v /var/run/docker.sock:/var/run/docker.sock \
           -v ${{ github.workspace }}:/root/.cache/ \
-          aquasec/trivy image anmolmishra334/fake_news_detection:${{ github.run_number }} \
+          aquasec/trivy:latest image anmolmishra334/fake_news_detection:${{ github.run_number }} \
           > scan_results/trivy_scan_report_${{ github.run_number }}.txt
 
     # Step 16: Upload Trivy Scan Report as an Artifact
