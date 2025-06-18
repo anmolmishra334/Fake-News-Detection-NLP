@@ -68,8 +68,8 @@ jobs:
           GIT_PASSWORD: ${{ secrets.GIT_CRED }}
           GITHUB_RUN_NUMBER: ${{ github.run_number }}
         run: |
-          git config --global user.name "$GIT_USERNAME"
-          git config --global user.email "anmol.mishra334@gmail.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
           git remote set-url origin https://$GIT_USERNAME:$GIT_PASSWORD@github.com/anmolmishra334/Fake-News-Detection-NLP.git
 
