@@ -79,6 +79,10 @@ jobs:
 
           git push https://x-access-token:${GITHUB_TOKEN}@github.com/anmolmishra334/Fake-News-Detection-NLP.git $NEW_BRANCH_NAME
 
+      # Step 10: Install GitHub CLI Required for git push
+      - name: Install GitHub CLI
+        run: sudo apt-get install -y gh
+
       # Step 10: Create Pull Request for new branch changes
       - name: Create Pull Request
         env:
