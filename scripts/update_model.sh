@@ -6,7 +6,7 @@ set -e
 # Define variables
 GIT_USERNAME="anmolmishra334"
 GIT_PASSWORD="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" 
-REPO_NAME="anmolmishra334/Fake-News-Detection-NLP"
+REPO_NAME="Fake-News-Detection-NLP"
 NEW_BRANCH_NAME="feature/new_model_$GITHUB_RUN_NUMBER"
 echo "1"
 # Replace old model files with the new one
@@ -17,10 +17,11 @@ cp dataset/new_model_folder/model.pkl Fake_News_App/
 echo "2"
 # Configure git
 git config --global user.name "$GIT_USERNAME"
-git config --global user.email "$GIT_USERNAME@users.noreply.github.com"
+git config --global user.email "anmol.mishra334@gmail.com"
 echo "3"
 # Add the GitHub credentials to the remote URL
 git remote set-url origin https://$GIT_USERNAME:$GIT_PASSWORD@github.com/$REPO_NAME.git
+# https://anmolmishra334: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@github.com/anmolmishra334/Fake-News-Detection-NLP.git
 echo "4"
 # Create a new branch
 git checkout -b $NEW_BRANCH_NAME
