@@ -58,9 +58,6 @@ jobs:
       run: chmod +x dataset/git_repo_FND/scripts/update_model.sh
 
     - name: Execute the script
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITHUB_RUN_NUMBER: ${{ github.run_number }}
       run: dataset/git_repo_FND/scripts/update_model.sh
        
     # Step 9: Build Docker Image
