@@ -59,10 +59,8 @@ jobs:
       # Step 8: Replace Old Model Files
       - name: Replace Model Files
         run: |
-          rm -f dataset/git_repo_FND/model.pkl
-          rm -f dataset/git_repo_FND/Fake_News_App/model.pkl
-          cp dataset/new_model_folder/model.pkl git_repo_FND/
-          cp dataset/new_model_folder/model.pkl git_repo_FND/Fake_News_App/
+          rm -f Fake_News_App/model.pkl
+          cp dataset/new_model_folder/model.pkl Fake_News_App/
 
       # Step 9: Configure Git and Push Changes
       - name: Configure Git and Push Changes
