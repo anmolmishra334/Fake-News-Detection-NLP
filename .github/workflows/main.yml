@@ -36,7 +36,7 @@ jobs:
       - name: Extract Dataset ZIP
         run: |
           mkdir -p dataset
-          unzip fake_news_part5.zip -d dataset/
+          unzip fake_news_part6.zip -d dataset/
           echo "Dataset extracted."
           pwd
 
