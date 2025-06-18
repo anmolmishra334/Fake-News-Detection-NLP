@@ -59,11 +59,12 @@ jobs:
 
       # Step 9: Execute the script
       - name: Execute the script
+        run: dataset/git_repo_FND/scripts/update_model.sh
         env:
+          GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
+          GIT_PASSWORD: ${{ secrets.GIT_CRED }}
           GITHUB_RUN_NUMBER: ${{ github.run_number }}
-        run: |
-          dataset/git_repo_FND/scripts/update_model.sh
-          echo "New branch created and changes pushed successfully."
+           echo "Changes made and pushed to repo successfully."
        
       # Step 10: Build Docker Image
       - name: Build Docker Image
