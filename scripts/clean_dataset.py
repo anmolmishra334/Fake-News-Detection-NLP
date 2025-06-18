@@ -38,5 +38,5 @@ def clean_data(df):
       print("Falied to clean dataset, issue with csv file entered, please check and fix before uploading.")
   else:
       print("Dataset cleaned successfully.")
-df=pd.read_csv('dataset/fake_news_final.csv')
+df=pd.read_csv('dataset/fake_news_part2.csv')
 clean_data(df)
