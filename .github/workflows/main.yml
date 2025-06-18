@@ -65,7 +65,7 @@ jobs:
       # Step 9: Configure Git and Push Changes
       - name: Configure Git and Push Changes
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+         # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_RUN_NUMBER: ${{ github.run_number }}
         run: |
           git config --global user.name "github-actions[bot]"
@@ -82,12 +82,26 @@ jobs:
       # Step 10: Install GitHub CLI Required for git push
       - name: Install GitHub CLI
         run: sudo apt-get install -y gh
-
-      # Step 10: Create Pull Request for new branch changes
+# Step 11: Create Pull Request
       - name: Create Pull Request
+        env:
+         # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_RUN_NUMBER: ${{ github.run_number }}
         run: |
+          NEW_BRANCH_NAME="feature/new_model_${GITHUB_RUN_NUMBER}"
+          echo "Creating a pull request from branch: $NEW_BRANCH_NAME"
+          
           gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
-          gh pr create --title "Update model.pkl files" --body "This PR updates the model.pkl files for run #${{ github.run_number }}" --base master --head $NEW_BRANCH_NAME
+          
+          # Verify the current branch before creating PR
+          git branch
+          
+          gh pr create \
+            --title "Update model.pkl files" \
+            --body "This PR updates the model.pkl files for run #${{ github.run_number }}" \
+            --base master \
+            --head $NEW_BRANCH_NAME
+
 
       # Step 10: Build Docker Image
       - name: Build Docker Image
