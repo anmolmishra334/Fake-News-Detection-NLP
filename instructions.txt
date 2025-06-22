@@ -1,11 +1,10 @@
 pandas
 numpy
 scikit-learn
-tensorflow
 keras
 transformers
 nltk
 matplotlib
 joblib
-
+tensorflow
 
