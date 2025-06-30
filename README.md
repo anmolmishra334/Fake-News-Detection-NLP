@@ -1,4 +1,4 @@
-# Fake-News-Detection-NLP
+# Fake-News-Detection-NLP 
 Classify news articles as genuine or fake using Natural Language Processing
 # Fake News Detection
 ## Project Dependecies:
