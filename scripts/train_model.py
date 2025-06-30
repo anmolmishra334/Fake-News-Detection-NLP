@@ -91,9 +91,20 @@ print(classification_report(y_test, ensemble_final_preds))
 # Save only the Ensemble Model
 new_model_folder = 'dataset/new_model_folder'
 os.makedirs(new_model_folder, exist_ok=True)
-
+'''
 with open(ensemble_model_file, 'wb') as file:
     pickle.dump({'vectorizer': vectorization, 
                  'tokenizer': tokenizer, 
                  'ensemble_weights': [log_reg_preds, dt_preds, lstm_preds]}, file)
     print(f"Ensemble model saved to {ensemble_model_file}.")
+'''
+# Save trained models along with vectorizer and tokenizer
+with open(ensemble_model_file, 'wb') as file:
+    pickle.dump({
+        'log_reg': log_reg,
+        'dt_model': dt_model,
+        'lstm_model': lstm_model,
+        'vectorizer': vectorization,
+        'tokenizer': tokenizer
+    }, file)
+print("Trained models and preprocessing tools saved to model.pkl.")
