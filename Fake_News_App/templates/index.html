@@ -2,88 +2,92 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Fake News Detection App Using ML</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake News Detection App</title>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
-            background-color: #f2f4f8;
+            background-color: #f8f9fa;
             padding: 40px;
         }
         .container {
             max-width: 600px;
             margin: auto;
-            background-color: white;
+            background-color: #fff;
             padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
         h1 {
             text-align: center;
-            color: #2c3e50;
-            margin-bottom: 30px;
+            color: #343a40;
+            margin-bottom: 20px;
         }
         textarea, input[type="file"] {
             width: 100%;
             padding: 10px;
             font-size: 16px;
-            margin-top: 10px;
-            margin-bottom: 15px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-        }
-        .button-group {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
+            margin: 10px 0 20px;
+            border-radius: 5px;
+            border: 1px solid #ced4da;
         }
         button {
             padding: 10px 20px;
-            font-size: 15px;
-            color: white;
+            font-size: 16px;
+            color: #fff;
             border: none;
-            border-radius: 6px;
+            border-radius: 5px;
             cursor: pointer;
         }
         .submit-btn {
-            background-color: #3498db;
+            background-color: #28a745;
         }
-        .clear-btn {
-            background-color: #e74c3c;
+        .reset-btn {
+            background-color: #dc3545;
         }
-        .result {
-            background-color: #ecf0f1;
+        .result, .download-link {
+            background-color: #e9ecef;
             padding: 15px;
-            border-radius: 6px;
+            border-radius: 5px;
             margin-top: 20px;
-            color: #333;
+            font-size: 16px;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Fake News Detection App Using ML</h1>
+        <h1>Fake News Detection App</h1>
         <form method="POST" enctype="multipart/form-data">
+            <!-- Text Prediction -->
             <label for="news_text"><strong>Enter News Text:</strong></label>
-            <textarea name="news_text" placeholder="Paste or write your news text here..."></textarea>
-            <div class="button-group">
-                <button type="submit" name="submit_text" class="submit-btn">Submit</button>
-                <button type="reset" class="clear-btn">Clear</button>
-            </div>
-
+            <textarea name="news_text" rows="4" placeholder="Paste or write your news text here..."></textarea>
+            <button type="submit" name="submit_text" class="submit-btn">Analyze Text</button>
+            
             <hr>
 
-            <label for="news_file"><strong>Upload News File (.txt):</strong></label>
-            <input type="file" name="news_file" accept=".txt">
-            <div class="button-group">
-                <button type="submit" name="submit_file" class="submit-btn">Submit</button>
-                <button type="reset" class="clear-btn">Clear</button>
-            </div>
+            <!-- CSV Upload -->
+            <label for="news_csv"><strong>Upload News CSV (.csv):</strong></label>
+            <input type="file" name="news_csv" accept=".csv">
+            <button type="submit" name="submit_csv" class="submit-btn">Process CSV</button>
         </form>
 
+        <!-- Result -->
         {% if result %}
         <div class="result">
             <strong>Result:</strong><br>
             {{ result }}
+        </div>
+        {% endif %}
+
+        <!-- Download Link -->
+        {% if csv_file %}
+        <div class="download-link">
+            <strong>Processed file is ready for download:</strong><br>
+            <a href="{{ url_for('download_file', filename=csv_file.split('/')[-1]) }}">Download Processed CSV</a>
         </div>
         {% endif %}
     </div>
