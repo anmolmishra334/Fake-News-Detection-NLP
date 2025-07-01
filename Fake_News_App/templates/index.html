@@ -74,6 +74,11 @@
             <input type="file" name="news_csv" accept=".csv">
             <button type="submit" name="submit_csv" class="submit-btn">Process CSV</button>
         </form>
+        <br>
+        <form method="GET" action="/generate_notebook/{{ csv_file }}">
+        <button type="submit" name="Generate Graph Notebook" class="submit-btn">Generate Graph Notebook</button>
+        </form>
+
 
         <!-- Result -->
         {% if result %}
