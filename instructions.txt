@@ -8,3 +8,6 @@ matplotlib
 joblib
 tensorflow
 wordcloud
+seaborn
+nbformat
+nbconvert

@@ -71,17 +71,16 @@ def generate_graphs_notebook(filename):
     test_file_path = os.path.join(UPLOAD_FOLDER, filename)
     df = pd.read_csv(test_file_path)
 
-    # Add word and character counts if not present
-    if 'word_count' not in df.columns:
-        df['word_count'] = df['Complete News'].apply(lambda x: len(str(x).split()))
-    if 'character_count' not in df.columns:
-        df['character_count'] = df['Complete News'].apply(lambda x: len(str(x)))
-
     # Create notebook
     notebook_path = os.path.join(UPLOAD_FOLDER, 'graph_details.ipynb')
     nb = new_notebook()
     nb.cells.append(new_code_cell("import pandas as pd\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nfrom wordcloud import WordCloud"))
-    
+
+    nb.cells.append(new_code_cell(f'''
+df = pd.read_csv(r"{test_file_path}")
+df
+'''))
+
     # Fake vs. Real News Count
     nb.cells.append(new_code_cell("""
 plt.figure(figsize=(6,4))
@@ -123,6 +122,40 @@ plt.axis('off')
 plt.title("Word Cloud of News Content")
 plt.show()
 """))
+# News Articles per Year
+    nb.cells.append(new_code_cell("""
+if 'Publish Dates' in df.columns:
+    df['Publish Dates'] = pd.to_datetime(df['Publish Dates'], errors='coerce')
+    df['Year'] = df['Publish Dates'].dt.year
+    plt.figure(figsize=(10,6))
+    sns.countplot(x='Year', data=df, palette='coolwarm')
+    plt.title("News Articles per Year")
+    plt.xticks(rotation=45)
+    plt.show()
+    """))
+
+   # Fake News Count by Month
+    nb.cells.append(new_code_cell("""
+df['Publish Dates'] = pd.to_datetime(df['Publish Dates'], errors='coerce')
+# Extract month name
+df['Month'] = df['Publish Dates'].dt.strftime('%B')  # Full month name
+df['Month_Num'] = df['Publish Dates'].dt.month       # For sorting
+# Filter only fake news
+df_fake = df[df['Fake News(Yes/No)'] == 1]
+# Group by month
+month_order = ['January', 'February', 'March', 'April', 'May', 'June',
+               'July', 'August', 'September', 'October', 'November', 'December']
+fake_by_month = df_fake.groupby('Month').size().reindex(month_order).fillna(0)
+# Plot
+plt.figure(figsize=(12,6))
+sns.barplot(x=fake_by_month.index, y=fake_by_month.values, palette='Reds_r')
+plt.title("Fake News Count by Month")
+plt.xlabel("Month")
+plt.ylabel("Number of Fake News Articles")
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+    """))
 
     # Save the notebook
     with open(notebook_path, 'w', encoding='utf-8') as f:

@@ -34,9 +34,18 @@ def clean_data(df):
       for item in df.index:
           if df.at[item, 'character_count']==0:
               df.drop(item, inplace=True)
+      df=pd.to_csv('dataset/fake_news_final.csv', index=False)
   except:
-      print("Falied to clean dataset, issue with csv file entered, please check and fix before uploading.")
+      return 0
   else:
-      print("Dataset cleaned successfully.")
-df=pd.read_csv('dataset/fake_news_final.csv')
-clean_data(df)
+      return 1
+try:
+    df=pd.read_csv('dataset/fake_news_final.csv')
+except:
+    df=pd.read_csv('dataset/fake_news_final.csv')
+    clean_data(df)
+else:
+    if(clean_data(df)):
+        print("Dataset cleaned successfully.")
+    else:
+        print("Falied to clean dataset, issue with csv file entered, please check and fix before uploading.")
