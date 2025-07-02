@@ -78,6 +78,17 @@
         <form method="GET" action="/generate_notebook/{{ csv_file }}">
         <button type="submit" name="Generate Graph Notebook" class="submit-btn">Generate Graph Notebook</button>
         </form>
+        <br>
+       <!-- templates/upload.html -->
+<form method="POST" enctype="multipart/form-data" action="/upload">
+  <input type="file" name="file" accept=".csv" required><br><br>
+  <label>
+    <input type="checkbox" name="allow_training">
+    Allow your data to be used for ML model training
+  </label><br><br>
+  <input type="submit" value="Submit">
+</form>
+
 
 
         <!-- Result -->

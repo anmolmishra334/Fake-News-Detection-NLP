@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import nbformat
 from nbformat.v4 import new_notebook, new_code_cell
 from nbconvert.preprocessors import ExecutePreprocessor
+from flask import Flask, request, render_template, redirect, url_for
 
 # Load ML models and necessary utilities
 with open('model.pkl', 'rb') as model_file:
@@ -52,6 +53,25 @@ def index():
                 csv_file_path = process_csv(file_path)
             else:
                 result = "Please upload a valid .csv file."
+        
+        elif 'submit_csv' in request.form:
+            uploaded_file = request.files.get('news_csv')
+            if uploaded_file and uploaded_file.filename.endswith('.csv'):
+                filename = uploaded_file.filename
+                file_path = os.path.join(UPLOAD_FOLDER, filename)
+                uploaded_file.save(file_path)
+
+                # Process the CSV
+                csv_file_path = process_csv(file_path)
+
+                # Check if checkbox was selected
+                if 'allow_training' in request.form:
+                    branch_name = os.path.splitext(filename)[0]
+                    processed_csv_path = os.path.join(UPLOAD_FOLDER, csv_file_path)
+                    push_to_git_branch(processed_csv_path, branch_name)
+            else:
+                result = "Please upload a valid .csv file."
+
 
     return render_template('index.html', result=result, csv_file=csv_file_path)
 
@@ -156,7 +176,21 @@ plt.xticks(rotation=45)
 plt.tight_layout()
 plt.show()
     """))
+@app.route("/upload", methods=["POST"])
+def upload():
+    file = request.files.get("file")
+    allow_training = request.form.get("allow_training")  # Will be 'on' if checked
 
+    if file:
+        filename = file.filename
+        # Save the file somewhere or process it
+        print(f"Received file: {filename}")
+        print(f"Allow training: {allow_training}")
+
+        # Example response
+        return f"File {filename} received. Allow training: {'Yes' if allow_training else 'No'}"
+
+    return "No file uploaded", 400
     # Save the notebook
     with open(notebook_path, 'w', encoding='utf-8') as f:
         nbformat.write(nb, f)
@@ -204,6 +238,23 @@ def process_csv(file_path):
     output_path = os.path.join(UPLOAD_FOLDER, output_file)
     df.to_csv(output_path, index=False)
     return output_file
+
+
+def push_to_git_branch(file_path, branch_name):
+    GITHUB_USERNAME = "anmolmishra334"
+    GITHUB_PASSWORD = "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"
+    REPO_URL = f"https://{GITHUB_USERNAME}:{GITHUB_PASSWORD}@github.com/{GITHUB_USERNAME}/your_repo_name.git"
+
+    # Git setup
+    repo_dir = os.getcwd()  # assuming your repo is the project root
+
+    subprocess.run(['git', 'config', '--global', 'user.name', GITHUB_USERNAME], cwd=repo_dir)
+    subprocess.run(['git', 'config', '--global', 'user.email', f'{GITHUB_USERNAME}@users.noreply.github.com'], cwd=repo_dir)
+
+    subprocess.run(['git', 'checkout', '-b', branch_name], cwd=repo_dir)
+    subprocess.run(['git', 'add', file_path], cwd=repo_dir)
+    subprocess.run(['git', 'commit', '-m', f'Add training data: {os.path.basename(file_path)}'], cwd=repo_dir)
+    subprocess.run(['git', 'push', '-u', REPO_URL, branch_name], cwd=repo_dir)
 
 
 if __name__ == '__main__':
