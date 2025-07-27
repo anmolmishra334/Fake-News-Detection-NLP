@@ -1,11 +1,12 @@
 pandas
+numpy
 scikit-learn
 keras
 transformers
 nltk
+tensorflow
 matplotlib
 joblib
 wordcloud
-numpy==1.24.3
-tensorflow==2.13.0
+
 
