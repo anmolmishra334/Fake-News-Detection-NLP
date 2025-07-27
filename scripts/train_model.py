@@ -10,8 +10,9 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Embedding, LSTM, Dense
-import pickle
+import joblib  # ✅ Replaces pickle
 import os
+import numpy as np
 
 # Load the dataset
 df = pd.read_csv('dataset/fake_news_final.csv')
@@ -36,17 +37,16 @@ x_train_padded = pad_sequences(x_train_seq, maxlen=100, padding='post')
 x_test_padded = pad_sequences(x_test_seq, maxlen=100, padding='post')
 
 # Filepath for the saved ensemble model
-ensemble_model_file = 'dataset/new_model_folder/model.pkl'
+ensemble_model_file = 'dataset/new_model_folder/model.joblib'
 
 # Check if an existing ensemble model is available
 if os.path.exists(ensemble_model_file):
-    with open(ensemble_model_file, 'rb') as file:
-        saved_data = pickle.load(file)
-        print("Loaded pre-trained ensemble model.")
-        vectorization = saved_data['vectorizer']
-        tokenizer = saved_data['tokenizer']
+    saved_data = joblib.load(ensemble_model_file)
+    print("✅ Loaded pre-trained ensemble model.")
+    vectorization = saved_data['vectorizer']
+    tokenizer = saved_data['tokenizer']
 else:
-    print("No pre-trained ensemble model found. Training a new ensemble model.")
+    print("🚀 No pre-trained ensemble model found. Training a new one.")
 
 # Logistic Regression model
 log_reg = LogisticRegression()
@@ -71,7 +71,6 @@ dt_preds = dt_model.predict_proba(x_test_vectorized)[:, 1]
 lstm_preds = lstm_model.predict(x_test_padded).flatten()
 
 # Ensemble: Soft Voting
-import numpy as np
 ensemble_preds = (log_reg_preds + dt_preds + lstm_preds) / 3
 ensemble_final_preds = (ensemble_preds >= 0.5).astype(int)
 
@@ -88,23 +87,14 @@ print(classification_report(y_test, (lstm_preds >= 0.5).astype(int)))
 print("Ensemble Model Report:")
 print(classification_report(y_test, ensemble_final_preds))
 
-# Save only the Ensemble Model
-new_model_folder = 'dataset/new_model_folder'
-os.makedirs(new_model_folder, exist_ok=True)
-'''
-with open(ensemble_model_file, 'wb') as file:
-    pickle.dump({'vectorizer': vectorization, 
-                 'tokenizer': tokenizer, 
-                 'ensemble_weights': [log_reg_preds, dt_preds, lstm_preds]}, file)
-    print(f"Ensemble model saved to {ensemble_model_file}.")
-'''
-# Save trained models along with vectorizer and tokenizer
-with open(ensemble_model_file, 'wb') as file:
-    pickle.dump({
-        'log_reg': log_reg,
-        'dt_model': dt_model,
-        'lstm_model': lstm_model,
-        'vectorizer': vectorization,
-        'tokenizer': tokenizer
-    }, file)
-print("Trained models and preprocessing tools saved to model.pkl.")
+# Save trained models along with vectorizer and tokenizer using joblib
+os.makedirs('dataset/new_model_folder', exist_ok=True)
+joblib.dump({
+    'log_reg': log_reg,
+    'dt_model': dt_model,
+    'lstm_model': lstm_model,
+    'vectorizer': vectorization,
+    'tokenizer': tokenizer
+}, ensemble_model_file)
+
+print(f"✅ Trained models and preprocessing tools saved to {ensemble_model_file}.")

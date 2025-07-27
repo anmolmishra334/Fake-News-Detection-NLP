@@ -1,5 +1,5 @@
 import os
-import pickle
+import joblib  # ✅ Replacing pickle with joblib
 import pandas as pd
 import numpy as np
 from flask import Flask, render_template, request, send_file
@@ -11,14 +11,13 @@ import nbformat
 from nbformat.v4 import new_notebook, new_code_cell
 from nbconvert.preprocessors import ExecutePreprocessor
 
-# Load ML models and necessary utilities
-with open('model.pkl', 'rb') as model_file:
-    saved_data = pickle.load(model_file)
-    log_reg = saved_data['log_reg']
-    dt_model = saved_data['dt_model']
-    lstm_model = saved_data['lstm_model']
-    vectorization = saved_data['vectorizer']
-    tokenizer = saved_data['tokenizer']
+# ✅ Load ML models and necessary utilities using joblib
+saved_data = joblib.load('dataset/new_model_folder/model.joblib')  # Adjust path if needed
+log_reg = saved_data['log_reg']
+dt_model = saved_data['dt_model']
+lstm_model = saved_data['lstm_model']
+vectorization = saved_data['vectorizer']
+tokenizer = saved_data['tokenizer']
 
 app = Flask(__name__)
 UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
@@ -67,7 +66,6 @@ def download_file(filename):
 
 @app.route('/generate_notebook/<filename>')
 def generate_graphs_notebook(filename):
-    # Load the test CSV file
     test_file_path = os.path.join(UPLOAD_FOLDER, filename)
     df = pd.read_csv(test_file_path)
 
@@ -77,12 +75,26 @@ def generate_graphs_notebook(filename):
     if 'character_count' not in df.columns:
         df['character_count'] = df['Complete News'].apply(lambda x: len(str(x)))
 
+    # Save modified DataFrame to a temporary CSV
+    temp_csv_path = os.path.join(UPLOAD_FOLDER, 'temp_graph_data.csv')
+    df.to_csv(temp_csv_path, index=False)
+
     # Create notebook
     notebook_path = os.path.join(UPLOAD_FOLDER, 'graph_details.ipynb')
     nb = new_notebook()
-    nb.cells.append(new_code_cell("import pandas as pd\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nfrom wordcloud import WordCloud"))
-    
-    # Fake vs. Real News Count
+
+    # ✅ Import packages
+    nb.cells.append(new_code_cell("""
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from wordcloud import WordCloud
+
+# Load the DataFrame from CSV
+df = pd.read_csv('temp_graph_data.csv')
+"""))
+
+    # Plot 1: Count Plot
     nb.cells.append(new_code_cell("""
 plt.figure(figsize=(6,4))
 sns.countplot(x='Fake News(Yes/No)', data=df, palette='Set1')
@@ -92,7 +104,7 @@ plt.ylabel("Count")
 plt.show()
 """))
 
-    # Word Count Distribution
+    # Plot 2: Word count histogram
     nb.cells.append(new_code_cell("""
 plt.figure(figsize=(8,5))
 sns.histplot(df['word_count'], bins=50, kde=True, color='skyblue')
@@ -102,7 +114,7 @@ plt.ylabel("Frequency")
 plt.show()
 """))
 
-    # Character Count Distribution
+    # Plot 3: Character count histogram
     nb.cells.append(new_code_cell("""
 plt.figure(figsize=(8,5))
 sns.histplot(df['character_count'], bins=50, kde=True, color='orange')
@@ -112,7 +124,7 @@ plt.ylabel("Frequency")
 plt.show()
 """))
 
-    # Word Cloud
+    # Plot 4: Word Cloud
     nb.cells.append(new_code_cell("""
 text_combined = ' '.join(df['Complete News'].dropna().tolist())
 wordcloud = WordCloud(width=800, height=400, background_color='white').generate(text_combined)
@@ -124,14 +136,14 @@ plt.title("Word Cloud of News Content")
 plt.show()
 """))
 
-    # Save the notebook
     with open(notebook_path, 'w', encoding='utf-8') as f:
         nbformat.write(nb, f)
 
-    # Execute the notebook
+    # ✅ Now run it
     execute_notebook(notebook_path)
 
     return send_file(notebook_path, as_attachment=True)
+
 
 
 def execute_notebook(notebook_path):
