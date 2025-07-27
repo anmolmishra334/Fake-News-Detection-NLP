@@ -60,8 +60,8 @@ jobs:
       # Step 8: Replace Old Model Files
       - name: Replace Model Files
         run: |
-          rm -f Fake_News_App/model.pkl
-          cp dataset/new_model_folder/model.pkl Fake_News_App/
+          rm -f Fake_News_App/model.joblib
+          cp dataset/new_model_folder/model.joblib Fake_News_App/
 
       # Step 9: Configure Git and Push Changes (with conditional check)
       - name: Configure Git and Push Changes
