@@ -10,7 +10,7 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Embedding, LSTM, Dense
-import joblib  # ✅ Replaces pickle
+import joblib 
 import os
 import numpy as np
 
@@ -42,11 +42,11 @@ ensemble_model_file = 'dataset/new_model_folder/model.joblib'
 # Check if an existing ensemble model is available
 if os.path.exists(ensemble_model_file):
     saved_data = joblib.load(ensemble_model_file)
-    print("✅ Loaded pre-trained ensemble model.")
+    print(" Loaded pre-trained ensemble model.")
     vectorization = saved_data['vectorizer']
     tokenizer = saved_data['tokenizer']
 else:
-    print("🚀 No pre-trained ensemble model found. Training a new one.")
+    print(" No pre-trained ensemble model found. Training a new one.")
 
 # Logistic Regression model
 log_reg = LogisticRegression()
@@ -97,4 +97,4 @@ joblib.dump({
     'tokenizer': tokenizer
 }, ensemble_model_file)
 
-print(f"✅ Trained models and preprocessing tools saved to {ensemble_model_file}.")
+print(f"Trained models and preprocessing tools saved to {ensemble_model_file}.")
