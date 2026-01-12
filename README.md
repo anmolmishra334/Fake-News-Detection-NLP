@@ -15,6 +15,7 @@ joblib
 ## Overview
 Fake news has become a significant issue in the digital age. This project aims to classify news articles as genuine or fake using Natural Language Processing (NLP) techniques. The system is designed to help identify misinformation and ensure the credibility of news sources.
 
+
 ## Features
 - Preprocessing of text data, including cleaning and tokenization.
 - Feature extraction using techniques like TF-IDF.
